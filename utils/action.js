@@ -24,6 +24,16 @@ export const generateChatResponse = async (chatMessages) => {
     //console.log(error);
     return null;
   }
-  
+}
 
+export const getExistingTour = async ({city, country}) => {
+  return null;
+}
+
+export const generateTourResponse = async ({city, country}) => {
+  return null;
+}
+
+export const createNewTour = async (tour) => {
+  return null;
 }
