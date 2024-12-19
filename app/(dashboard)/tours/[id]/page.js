@@ -3,6 +3,9 @@ import { generateTourImage, getSingleTour } from "@/utils/action";
 import { redirect } from "next/dist/server/api-utils";
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
+
+const url = `https://api.unsplash.com/search/photos?client_id=${process.env.UNSPLASH_API_KEY}&query=`;
 
 const SingleTourPage = async ({params}) => {
   const tour = await getSingleTour(params.id);
@@ -11,7 +14,11 @@ const SingleTourPage = async ({params}) => {
     redirect('/tours');
   }
 
-  const tourImage = await generateTourImage(tour);
+  const { data } = await axios(`${url}${tour.city}`);
+  const tourImage = data?.results[0]?.urls?.raw;  
+
+//  comment out getting the tour image from the AI
+//  const tourImage = await generateTourImage(tour);  
 
   return (
     <div>
