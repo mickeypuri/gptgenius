@@ -20,8 +20,11 @@ export const generateChatResponse = async (chatMessages) => {
     });
     //console.log(response.choices[0].message);
     //console.log(response);
-
-    return response.choices[0].message;
+    
+    return {
+      message: response.choices[0].message,
+      tokens: response.usage.total_tokens
+    };
   }
   catch (error) {
     //console.log(error);
@@ -32,7 +35,7 @@ export const generateChatResponse = async (chatMessages) => {
 
 
 export const generateTourResponse = async ({ city, country }) => {
-  
+
   const query = `Find a city called ${city} in the country called ${country}. If ${city} exists in ${country}, create a list of things families can do in ${city}, ${country}. 
 Once you have a list, create a one-day tour. Response should be in the following JSON format: 
 {
@@ -45,16 +48,16 @@ Once you have a list, create a one-day tour. Response should be in the following
   }
 }
 If you can't find info on exact ${city}, or ${city} does not exist, or it's population is less than 1, or it is not located in ${country} return { "tour": null }, with no additional characters.`;
-  
-console.log(query);
+
+  console.log(query);
 
   try {
     const response = await openai.chat.completions.create({
       messages: [
         { role: "system", content: 'You are a tour guide' },
-        { 
-          role: "user", 
-          content: query 
+        {
+          role: "user",
+          content: query
         }
       ],
       model: "gpt-3.5-turbo",
@@ -64,12 +67,12 @@ console.log(query);
     console.log(response);
 
     const tourData = JSON.parse(response.choices[0].message.content);
-    
+
     if (!tourData.tour) {
       return null;
     }
     console.log(tourData.tour);
-    return {tour: tourData.tour, tokens: response.usage.total_tokens};
+    return { tour: tourData.tour, tokens: response.usage.total_tokens };
   }
   catch (error) {
     console.log(error);
